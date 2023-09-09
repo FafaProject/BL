@@ -5,8 +5,9 @@ document.getElementById("button").addEventListener("click", function(event) {
     
     var resultado = document.getElementById("resultado");
     resultado.textContent = "Nombre: " + username + ", Puntos: " + puntos;
-    window.location.href = "index.html ";
+    window.location.href = "index.html";
   });
+  
   
 
 

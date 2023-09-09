@@ -1,12 +1,10 @@
 var dealerSum = 0;
 var yourSum = 0;
-
 var dealerAceCount = 0;
 var yourAceCount = 0; 
-
-var puntosUsuario= 5000;
-var apuesta= 0;
-
+var apuesta = 0;
+var dineroUsuario2 = localStorage.getItem("keyApuesta");
+var dineroUsuario = parseInt(dineroUsuario2)
 var hidden;
 var deck;
 
@@ -16,7 +14,7 @@ window.onload = function() {
     buildDeck();
     shuffleDeck();
     startGame();
-    puntosUsuario= localStorage.getItem("apuestakey");
+
 }
 
 function buildDeck() {
@@ -48,6 +46,7 @@ function startGame() {
     dealerAceCount += checkAce(hidden);
     // console.log(hidden);
     // console.log(dealerSum);
+    
     while (dealerSum < 17) {
         //<img src="./cards/4-C.png">
         let cardImg = document.createElement("img");
@@ -68,13 +67,11 @@ function startGame() {
         document.getElementById("your-cards").append(cardImg);
     }
 
-let prompto = prompt (`Ingrese la cantidad de dinero que quiere apostar \ncantidad actual: ${puntosUsuario} `)
     console.log(yourSum);
-    console.log(puntosUsuario)
-    console.log(prompto)
+    console.log(dineroUsuario);
     document.getElementById("hit").addEventListener("click", hit);
     document.getElementById("stay").addEventListener("click", stay);
-    apuesta=prompto;
+    document.getElementById("dineros").innerText = "Dinero del jugador: " + dineroUsuario;
 
 }
 
@@ -112,11 +109,11 @@ function stay() {
     document.getElementById("final").style.display = "flex";
     if (yourSum > 21 && yourSum > dealerSum || yourSum < dealerSum && dealerSum <= 21 || yourSum == dealerSum && yourSum > 21) {
         document.getElementById("mensajeFin").innerHTML = "¡Has perdido!";
-        puntosUsuario-=parseInt(apuesta);
+        dineroUsuario -= parseInt(apuesta);
     }
     else if (dealerSum > 21 && yourSum < dealerSum || yourSum > dealerSum && yourSum <=21) {
         document.getElementById("mensajeFin").innerHTML = "¡Has ganado!";
-        puntosUsuario+= parseInt(apuesta);
+        dineroUsuario = parseInt(dineroUsuario) + parseInt(apuesta*2);
     }
     
     else if (yourSum == dealerSum && yourSum <= 21) {
@@ -126,9 +123,10 @@ function stay() {
     document.getElementById("dealer-sum").innerText = dealerSum;
     document.getElementById("your-sum").innerText = yourSum;
     document.getElementById("results").innerText = message;
-    localStorage.setItem("apuestakey",puntosUsuario)
-    console.log(puntosUsuario)
-    console.log(apuesta)
+    localStorage.setItem("keyApuesta",dineroUsuario);
+    console.log(dineroUsuario);
+    console.log(typeof dineroUsuario);
+    console.log(apuesta);
 }
 
 function getValue(card) {
@@ -157,4 +155,19 @@ function reduceAce(playerSum, playerAceCount) {
         playerAceCount -= 1;
     }
     return playerSum;
+}
+
+function placeBet() {
+    var betInput = document.getElementById("bet-input");
+    var betAmount = parseInt(betInput.value);
+    
+    if (betAmount > 0 && betAmount <= dineroUsuario) {
+        apuesta = betAmount;
+        dineroUsuario -= apuesta;
+        document.getElementById("dineros").innerText = "Dinero del jugador: " + dineroUsuario;
+        betInput.value = "";
+        document.getElementById("cantidadApuesta").innerText = "Apuesta: " + apuesta;
+    } else {
+        alert("Ingrese una cantidad válida para apostar.");
+    }
 }
